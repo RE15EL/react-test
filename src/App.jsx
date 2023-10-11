@@ -2,18 +2,7 @@ import './App.css'
 import { useState } from 'react'
 import { useEffect } from 'react';
 import { getRandomfact } from './services/facts';
-import { getCatUrl } from './services/cats-url';
-
-function useCatImage({fact}) {
-  const [imageUrl, setImageUrl] = useState();
-
-  useEffect(()=>{
-    if (!fact) return;
-    const firstWord = fact.split(' ',1).join();
-    getCatUrl(firstWord).then(newImgUrl => setImageUrl(newImgUrl))
-  }, [fact])
-  return { imageUrl };
-}
+import { useCatImage } from './hooks/useCatImage';
 
 function App() {
   const [fact, setFact]=useState();
