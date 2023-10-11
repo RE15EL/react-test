@@ -4,22 +4,26 @@ import { useEffect } from 'react';
 import { getRandomfact } from './services/facts';
 import { getCatUrl } from './services/cats-url';
 
-
-function App() {
-  const [fact, setFact]=useState();
-  const [imgUrl, setImgUrl]=useState();
-
-  useEffect(() =>{
-    getRandomfact().then(newfact => setFact(newfact));
-  }, [])
+function useCatImage({fact}) {
+  const [imageUrl, setImageUrl] = useState();
 
   useEffect(()=>{
     if (!fact) return;
     const firstWord = fact.split(' ',1).join();
-    getCatUrl(firstWord).then(imgUrl => setImgUrl(imgUrl))
+    getCatUrl(firstWord).then(newImgUrl => setImageUrl(newImgUrl))
   }, [fact])
+  return { imageUrl };
+}
 
-  const getNewFact = async () => {
+function App() {
+  const [fact, setFact]=useState();
+  const {imageUrl} = useCatImage({fact});
+
+  useEffect(() =>{ //get random fact every time the component is rendered
+    getRandomfact().then(newfact => setFact(newfact));
+  }, [])  
+
+  const getNewFact = async () => { //get random fact every time button is clicked
     getRandomfact().then(newfact => setFact(newfact));
   }
 
@@ -29,7 +33,7 @@ function App() {
       <button onClick={getNewFact}>New fact</button>
       <main>
         <section className='img-container'>
-          {imgUrl && <img className='img-cat' src={imgUrl} alt='cat' />}
+          {imageUrl && <img className='img-cat' src={imageUrl} alt='cat' />}
         </section>
         <section className='desc-container'>
           {fact && <p>{fact}</p>}
